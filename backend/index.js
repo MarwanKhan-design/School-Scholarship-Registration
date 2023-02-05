@@ -4,12 +4,20 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import config from "config";
 import cors from "cors";
+import path from "path";
+import { dirname } from "path";
 
 // Import Routes
 import UserRoutes from "./routes/user.js";
 import AuthRoutes from "./routes/auth.js";
 import PostRoutes from "./routes/post.js";
 import StudentRoutes from "./routes/student.js";
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 // App
 // if (!config.get("jwtPrivateKey")) {
@@ -22,6 +30,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname + "/public")));
+
 app.use(
   cors({
     origin: "*",
@@ -41,4 +51,6 @@ mongoose.connect(
   () => console.log("connected to DB")
 );
 
-app.listen(3000, () => console.log("App running on port 3000"));
+app.listen(process.env.PORT || 3000, () =>
+  console.log("App running on port 3000")
+);
